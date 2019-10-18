@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter/rendering.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // debugPaintSizeEnabled = true;
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -22,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
-      routes: {'new_page': (context) => NewRoute()},
+      routes: {'scaffold_route': (context) => ScaffoldRoute()},
     );
   }
 }
@@ -104,10 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("open new route"),
               textColor: Colors.blue,
               onPressed: () {
-                Navigator.pushNamed(context, 'new_page');
+                Navigator.pushNamed(context, 'scaffold_route');
               },
             ),
-            RandomWordsWidget()
+            RandomWordsWidget(),
+            Echo(text: 'aaaaa', backgroundColor: Colors.red)
           ],
         ),
       ),
@@ -116,16 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-}
-
-class NewRoute extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("New route")),
-      body: Center(child: Text("This is new route")),
     );
   }
 }
@@ -141,7 +136,8 @@ class RandomWordsWidget extends StatelessWidget {
 }
 
 class Echo extends StatelessWidget {
-  const Echo({Key key, this.text, this.backgroundColor}) : super(key: key);
+  const Echo({Key key, @required this.text, this.backgroundColor: Colors.grey})
+      : super(key: key);
 
   final String text;
   final Color backgroundColor;
@@ -155,4 +151,49 @@ class Echo extends StatelessWidget {
       ),
     );
   }
+}
+
+class ScaffoldRoute extends StatefulWidget {
+  @override
+  _ScaffoldRouteState createState() => _ScaffoldRouteState();
+}
+
+class _ScaffoldRouteState extends State<ScaffoldRoute> {
+
+  int _selectedIndex = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("App Name"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {},
+            )
+          ],
+        ),
+        floatingActionButton:
+            FloatingActionButton(child: Icon(Icons.add), onPressed: _onAdd),
+        bottomNavigationBar: BottomNavigationBar(
+          items:[
+            BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
+            BottomNavigationBarItem(icon: Icon(Icons.business), title: Text("Business")),
+            BottomNavigationBarItem(icon: Icon(Icons.school), title: Text("School")),
+          ],
+          onTap: _onTap,
+          currentIndex: _selectedIndex,
+          fixedColor: Colors.blue,
+        ),
+        drawer: Drawer(),
+    );
+  }
+  void _onTap(int selectedIndex){
+      setState(() {
+        this._selectedIndex = selectedIndex;
+      });
+  }
+
+  void _onAdd() {}
 }
